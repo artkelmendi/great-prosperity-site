@@ -433,7 +433,8 @@ h1, h2, h3, h4 {
 /* Gradient cover panel with the category icon */
 .cat-card__media {
   position: relative; aspect-ratio: 16 / 10; overflow: hidden;
-  display: grid; place-items: center;
+  display: grid; align-items: center; justify-items: center;
+  place-items: center;
   background: linear-gradient(150deg, var(--cg1, #15263D), var(--cg2, #1F6D8C));
   color: rgba(255, 255, 255, .94);
 }
@@ -449,6 +450,8 @@ h1, h2, h3, h4 {
 }
 .cat-card__icon {
   position: relative; width: 58px; height: 58px; stroke-width: 1.4;
+  display: block; margin: auto;
+  align-self: center; justify-self: center;
   filter: drop-shadow(0 4px 10px rgba(0, 0, 0, .22));
   transition: transform .35s var(--ease);
 }
