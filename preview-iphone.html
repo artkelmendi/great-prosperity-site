@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Device Preview — Great Prosperity</title>
+  <!-- ==========================================================================
+       DEVICE PREVIEW (dev/demo tool — not part of the published site)
+       Shows the real site running inside a phone/tablet frame.
+       Open this file from the same folder as index.html.
+       Tip: the iframe needs the pages served together — open via the local
+       server (http://localhost:5599/preview-iphone.html) or any static host.
+       Change the iPhone 17 Pro Max size in the DEVICES object below if needed.
+       ========================================================================== -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@500;600&display=swap" />
+  <style>
+    :root{
+      --bg1:#0E1A2B; --bg2:#1B3050; --ink:#0E1A2B; --on:#E7EDF4; --mut:#9DB0C4;
+      --gold:#4FA3C7; --gold-soft:#9AD0E4; --line:rgba(231,237,244,.16);
+    }
+    *{box-sizing:border-box;margin:0}
+    body{
+      min-height:100vh; font-family:'Inter',system-ui,sans-serif; color:var(--on);
+      background:radial-gradient(120% 90% at 80% 0%,rgba(79,163,199,.14),transparent 55%),
+                 linear-gradient(180deg,var(--bg1),var(--bg2));
+      display:flex; flex-direction:column; align-items:center; padding:28px 16px 48px;
+    }
+    .head{text-align:center; margin-bottom:22px}
+    .head .eyebrow{font-size:.72rem; letter-spacing:.22em; text-transform:uppercase; color:var(--gold-soft); font-weight:600}
+    .head h1{font-family:'Playfair Display',serif; font-weight:600; font-size:clamp(1.6rem,4vw,2.3rem); margin-top:.4rem}
+    .head h1 b{color:var(--gold-soft); font-weight:600}
+    .head p{color:var(--mut); margin-top:.5rem; font-size:.92rem}
+
+    .controls{display:flex; flex-wrap:wrap; gap:1.4rem; justify-content:center; align-items:center; margin-bottom:8px}
+    .group{display:flex; flex-direction:column; gap:.45rem; align-items:center}
+    .group span{font-size:.66rem; letter-spacing:.16em; text-transform:uppercase; color:var(--mut)}
+    .pills{display:flex; gap:.4rem; background:rgba(255,255,255,.05); border:1px solid var(--line); padding:4px; border-radius:999px}
+    .pill{border:0; background:transparent; color:var(--mut); font:inherit; font-size:.84rem; font-weight:500;
+      padding:.5rem .95rem; border-radius:999px; cursor:pointer; transition:all .2s ease; white-space:nowrap}
+    .pill:hover{color:var(--on)}
+    .pill.active{background:var(--gold); color:var(--ink)}
+
+    .label{font-size:.8rem; color:var(--mut); margin:18px 0 4px; letter-spacing:.02em}
+    .label b{color:var(--on); font-weight:600}
+
+    .stage{flex:1; display:grid; place-items:center; width:100%; margin-top:6px}
+    .scaler{transition:transform .35s cubic-bezier(.22,.61,.36,1)}
+
+    /* ---- Device frame ---- */
+    .device{position:relative; background:linear-gradient(150deg,#3a3f47,#191c20);
+      padding:14px; border-radius:var(--radius,56px); box-shadow:0 40px 90px rgba(0,0,0,.55), inset 0 0 0 2px rgba(255,255,255,.06)}
+    .screen{position:relative; width:var(--sw,440px); height:var(--sh,956px); background:#000;
+      border-radius:calc(var(--radius,56px) - 12px); overflow:hidden}
+    .screen iframe{width:100%; height:100%; border:0; display:block; background:#fff}
+
+    /* Dynamic Island */
+    .island{position:absolute; top:12px; left:50%; transform:translateX(-50%); width:120px; height:34px;
+      background:#000; border-radius:20px; z-index:5; display:flex; align-items:center; justify-content:flex-end; padding-right:10px}
+    .island::after{content:""; width:9px; height:9px; border-radius:50%;
+      background:radial-gradient(circle at 35% 35%,#2b3b4d,#05080c)}
+    .device.no-island .island{display:none}
+
+    /* Home button (SE) */
+    .home{display:none; position:absolute; bottom:-46px; left:50%; transform:translateX(-50%);
+      width:46px; height:46px; border-radius:50%; border:2px solid rgba(255,255,255,.18)}
+    .device.has-home{padding-bottom:60px}
+    .device.has-home .home{display:block}
+
+    /* Side buttons */
+    .btn{position:absolute; background:#15181c; border-radius:3px}
+    .btn.action{left:-3px; top:120px; width:3px; height:34px}
+    .btn.vol-up{left:-3px; top:180px; width:3px; height:58px}
+    .btn.vol-dn{left:-3px; top:250px; width:3px; height:58px}
+    .btn.power{right:-3px; top:170px; width:3px; height:92px}
+
+    .foot{margin-top:30px; color:var(--mut); font-size:.8rem; text-align:center; max-width:46ch; line-height:1.6}
+    .foot code{color:var(--gold-soft); background:rgba(255,255,255,.06); padding:.1rem .4rem; border-radius:5px; font-size:.86em}
+    @media (max-width:520px){ .device{transform:none} }
+  </style>
+</head>
+<body>
+  <div class="head">
+    <div class="eyebrow">Device preview</div>
+    <h1>Great <b>Prosperity</b> on screen</h1>
+    <p>Your live site, running inside a real device frame.</p>
+  </div>
+
+  <div class="controls">
+    <div class="group">
+      <span>Device</span>
+      <div class="pills" id="devicePills">
+        <button class="pill active" data-device="ipx">iPhone 17 Pro Max</button>
+        <button class="pill" data-device="se">iPhone SE</button>
+        <button class="pill" data-device="ipad">iPad Pro 11"</button>
+      </div>
+    </div>
+    <div class="group">
+      <span>Page</span>
+      <div class="pills" id="pagePills">
+        <button class="pill active" data-page="index.html">Ballina</button>
+        <button class="pill" data-page="catalog.html">Katalogu</button>
+        <button class="pill" data-page="contact.html">Kontakti</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="label" id="dims"></div>
+
+  <div class="stage">
+    <div class="scaler" id="scaler">
+      <div class="device" id="device">
+        <div class="island"></div>
+        <span class="btn action"></span>
+        <span class="btn vol-up"></span>
+        <span class="btn vol-dn"></span>
+        <span class="btn power"></span>
+        <div class="screen">
+          <iframe id="frame" src="index.html" title="Site preview"></iframe>
+        </div>
+        <div class="home"></div>
+      </div>
+    </div>
+  </div>
+
+  <p class="foot">
+    This page is a preview tool, not part of the published site — you can delete
+    <code>preview-iphone.html</code> before going live, or keep it to show the client.
+    Open it through the local server so the pages load inside the frame.
+  </p>
+
+  <script>
+    var DEVICES = {
+      ipx:  { name:'iPhone 17 Pro Max', w:440, h:956, radius:56, island:true,  home:false },
+      se:   { name:'iPhone SE',         w:375, h:667, radius:38, island:false, home:true  },
+      ipad: { name:'iPad Pro 11"',      w:834, h:1194,radius:26, island:false, home:false }
+    };
+
+    var device = document.getElementById('device');
+    var screenEl = device.querySelector('.screen');
+    var scaler = document.getElementById('scaler');
+    var frame = document.getElementById('frame');
+    var dims = document.getElementById('dims');
+
+    function setDevice(key){
+      var d = DEVICES[key];
+      screenEl.style.setProperty('--sw', d.w + 'px');
+      screenEl.style.setProperty('--sh', d.h + 'px');
+      device.style.setProperty('--radius', d.radius + 'px');
+      device.classList.toggle('no-island', !d.island);
+      device.classList.toggle('has-home', d.home);
+      dims.innerHTML = '<b>' + d.name + '</b> &nbsp;·&nbsp; ' + d.w + ' × ' + d.h + ' pt';
+      rescale();
+    }
+
+    function rescale(){
+      var rect = device.getBoundingClientRect();
+      var natH = rect.height / (currentScale || 1);
+      var natW = rect.width  / (currentScale || 1);
+      var availH = window.innerHeight - 360;
+      var availW = window.innerWidth - 48;
+      var s = Math.min(1, availH / natH, availW / natW);
+      currentScale = s;
+      scaler.style.transform = 'scale(' + s + ')';
+    }
+    var currentScale = 1;
+
+    document.getElementById('devicePills').addEventListener('click', function(e){
+      var b = e.target.closest('.pill'); if(!b) return;
+      this.querySelectorAll('.pill').forEach(function(p){p.classList.remove('active')});
+      b.classList.add('active');
+      setDevice(b.dataset.device);
+    });
+    document.getElementById('pagePills').addEventListener('click', function(e){
+      var b = e.target.closest('.pill'); if(!b) return;
+      this.querySelectorAll('.pill').forEach(function(p){p.classList.remove('active')});
+      b.classList.add('active');
+      frame.src = b.dataset.page;
+    });
+
+    window.addEventListener('resize', rescale);
+    setDevice('ipx');
+  </script>
+</body>
+</html>
