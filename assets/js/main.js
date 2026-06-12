@@ -38,8 +38,8 @@
     try { localStorage.setItem(STORAGE_KEY, lang); } catch (e) {}
   }
 
-  var savedLang = 'sq';
-  try { savedLang = localStorage.getItem(STORAGE_KEY) || 'sq'; } catch (e) {}
+  var savedLang = 'en';
+  try { savedLang = localStorage.getItem(STORAGE_KEY) || 'en'; } catch (e) {}
   applyLang(savedLang);
 
   document.querySelectorAll('.lang__btn').forEach(function (btn) {
